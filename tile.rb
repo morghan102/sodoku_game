@@ -1,8 +1,10 @@
+require "byebug"
+
 class Tile
 
   attr_accessor :given, :value
   def initialize(value)
-    @given = value == 0 ? true : false
+    @given = value == 0 ? false : true
     @value = value
   end
 
