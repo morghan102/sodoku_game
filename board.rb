@@ -1,5 +1,6 @@
 require_relative "./tile.rb"
 require "byebug"
+require "matrix"
 
 
 class Board
@@ -59,6 +60,8 @@ end
       tile.value
     end
   end
+
+
 # these 2 (row & column) are probs right but it's hard to tell w all 0 values
   def row(idx)
     grid.map { |row| values(row) }[idx]
@@ -68,12 +71,55 @@ end
     grid.transpose.map { |row| values(row) }[idx]
   end
 
+
+  # i dont get how this works... pls come back and look through!
   def square(idx)
-    # i can figure this out but atm my mind just wont
+    tiles = []
+    x = (idx / 3) *3
+    y = (idx % 3) * 3
+
+    (x...x+3).each do |i|
+      (y...y+3).each do |j|
+        # debugger
+        tiles << self[[i,j]]
+      end
+    end
+    tiles
+  end
+
+  def rows
+    grid.map { |row| values(row) }
+  end
+
+  def columns
+    grid.transpose.map { |col| values(col) }
+  end
+  
+  def columns
+    grid.transpose.map { |col| values(col) }
+  end
+
+  def squares 
+    (0...9).map { |i| values(square(i)) }
+  end
+  # self of double arr ??? self[[0,4]] why that work?? 
+  # but not grid[0,4], output is something else entirely
+
+
+  def rows_solved?
+    rows.all? { |r| r.sort == (1..9).to_a }
+  end
+
+  def columns_solved?
+    columns.all? { |c| c.sort == (1..9).to_a }
+  end
+
+  def squares_solved?
+    squares.all? { |sq| sq.sort == (1..9).to_a }
   end
 
   def solved?
-    return true if 
+    return true if rows_solved? && columns_solved? && squares_solved?
     false
   end
 
