@@ -1,25 +1,20 @@
 require_relative "./tile.rb"
 require "byebug"
-require "matrix"
-
 
 class Board
 
   def self.from_file(filename) #class method... factory method?
-    # they 1st put all rows into its own arr, the pieces being the rows 
     rows = File.readlines(filename).map do |row|
-      row.chomp.split("").map do |tile|
-        Tile.new(tile.to_i)
-      end
+      row.chomp.split("").map { |tile| Tile.new(tile.to_i) }
     end
     self.new(rows) 
   end
 
-def self.empty_grid
-  Array.new(9) do 
-    Array.new(9) {Tile.new(0)}
-  end
-end
+# def self.empty_grid
+#   Array.new(9) do 
+#     Array.new(9) {Tile.new(0)}
+#   end
+# end
 # i dont get why we start w this empty grid... meybs to link "self"?
 # NO bc the empty grid is for playing and the file is the solution
 
@@ -30,7 +25,9 @@ end
     @grid = grid
   end
 
-
+  def update_tile(idx, val)
+    self[idx] = val
+  end
 
   def [](idx)
     row, col = idx
@@ -42,13 +39,13 @@ end
     grid[row][col].value = val
   end
 
-  def render #shd the board be divided somehow into the squares?
+  def render 
     puts
     grid.each_with_index do |row, row_i|
       row_i % 3 == 0 && row_i != 0 ? (print "-------------\n") : (print "")
       row.each_with_index do |tile, i|
         i % 3 == 0 ? (print "|") : (print "")
-        print tile.value
+        print tile.to_s
       end
       print "|\n"
     end
@@ -61,8 +58,6 @@ end
     end
   end
 
-
-# these 2 (row & column) are probs right but it's hard to tell w all 0 values
   def row(idx)
     grid.map { |row| values(row) }[idx]
   end
@@ -80,7 +75,6 @@ end
 
     (x...x+3).each do |i|
       (y...y+3).each do |j|
-        # debugger
         tiles << self[[i,j]]
       end
     end
@@ -102,9 +96,6 @@ end
   def squares 
     (0...9).map { |i| values(square(i)) }
   end
-  # self of double arr ??? self[[0,4]] why that work?? 
-  # but not grid[0,4], output is something else entirely
-
 
   def rows_solved?
     rows.all? { |r| r.sort == (1..9).to_a }
